@@ -34,7 +34,7 @@ class Request(object):
         read = sessions.ReadConf.ReadConf(d.split("|")[0])
         self.conf = read.get_conf()
         self.AUTHORIZATION = "Digest t=\"%s\",SystemType=\"2\",u=\"%s\",r=\"%s\",DeviceId=\"%s\",Model=\"%s\",DeviceOS=\"%s\",Release=\"%s\",VersionName=\"%s\",VersionCode=\"%s\",PushToken=\"\",uId=\"%s\",uName=\"%s\",uPhone=\"%s\",SessionId=\"%s\",uType=\"%s\",bDChannelId=\"%s\",bDUserId=\"%s\",AppBuild=\"%s\",uUID=\"%s\""
-        self.AUTHORIZATION_TOKEN = "Digest u=\"app\",r=\"%s\",SystemType=\"%s\",Model=\"%s\",Release=\"%s\",DeviceId=\"%s\",VersionCode=\"%s\",VersionName=\"%s\",AppBuild=\"%s\",PushToken=\"\",DeviceOS=\"%s\",uUID=\"%s\""
+        self.AUTHORIZATION_TOKEN = "Digest u=\"E\",r=\"%s\",SystemType=\"%s\",Model=\"%s\",Release=\"%s\",DeviceId=\"%s\",VersionCode=\"%s\",VersionName=\"%s\",AppBuild=\"%s\",PushToken=\"\",DeviceOS=\"%s\",uUID=\"%s\""
         self.AUTHORIZATION_IMAGE_UPLOAD = "Digest u=\"A\", r=\"B\""
         self.session = requests.session()
         self.TOKEN_NAME = ""
@@ -132,7 +132,7 @@ class Request(object):
         :return:
         """
         date = self.__timestamp()
-        temp = "%s%s%s%s%s" % (self.TOKEN_NAME, date, "app", method_name, self.TOKEN_VALUE)
+        temp = "%s%s%s%s%s" % (self.TOKEN_NAME, date, "E", method_name, self.TOKEN_VALUE)
         m = hashlib.md5()
         m.update(temp.encode())
         return m.hexdigest(), date
