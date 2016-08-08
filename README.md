@@ -37,7 +37,32 @@
   - PyCharm 
 
 
+- 替换fiddler js
+
+  - 项目根目录的fiddler js整个文件内容替换fiddler的js
+    - 打开fiddler的Customize Rules功能
+    - 删除所有内容，并把fiddler js内容全部拷贝进去
+    - 修改拦截的host等信息
+    - [fiddler保存请求](https://testerhome.com/topics/5481)
+
+  fiddler js自定义信息
+
+  ```javascript
+
+  	//自定义参数设置
+  	public static var filterUrl = "a-webapi.test.b.com";
+  	public static var filePath = "D:\\Fiddler Sessions\\Api\\";
+  	public static var filePathForRequested = "D:\\Fiddler Sessions\\Requested.txt";
+  	public static var filePathForErrorResponse = "D:\\Fiddler Sessions\\ErrorResponse.txt";
+  	public static var filePathForVerifyRequset = "D:\\Fiddler Sessions\\VerifyRequset.txt";
+  	public static var filePathForRemoveSession = "D:\\Fiddler Sessions\\RemoveSession.txt";
+  	public static var filePathForAddSession = "D:\\Fiddler Sessions\\AddSession.txt";
+  ```
+
+  ​
+
 - token/session替换
+
   - 替换成你们项目对应的token等
   - 修改配置文件
   - 修改response body json 判断逻辑
