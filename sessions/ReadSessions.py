@@ -11,6 +11,7 @@
 
 import os
 import utils.GlobalList
+import utils.FileUtil
 
 
 class ReadSessions(object):
@@ -19,14 +20,6 @@ class ReadSessions(object):
         self.sessions_path = '%s%s' % (utils.GlobalList.SESSIONS_PATH, "\\Api")
         self.__remove_special_files()
 
-    def __get_file_list(self):
-        """
-        获取目标地址目录下的文件列表
-        :return: 返回标地址目录下的文件列表
-        """
-        for root, dirs, files in os.walk(self.sessions_path):
-            return (f for f in files)
-
     def __remove_special_files(self):
         """
         删除特定的不加入遍历接口的文件
@@ -34,7 +27,7 @@ class ReadSessions(object):
         金钱相关、发文章等在外网的接口
         :return:
         """
-        f = self.__get_file_list()
+        f = utils.FileUtil.get_file_list(self.sessions_path)
         # str数据转换成list
         remove_sessions = eval(utils.GlobalList.SPECIAL_SESSIONS)
         for i in f:
@@ -42,7 +35,7 @@ class ReadSessions(object):
                 if i.startswith(j):
                     os.remove('%s%s%s' % (self.sessions_path, "\\", i))
 
-    def __get_single_session(self, path):
+    def get_single_session(self, path):
         """
         获取单个文件的所有请求（单个请求的url，请求参数，响应体）
         :return:
@@ -73,9 +66,9 @@ class ReadSessions(object):
         获取所有请求
         :return:
         """
-        files = self.__get_file_list()
+        files = utils.FileUtil.get_file_list(self.sessions_path)
         for i2 in files:
-            yield (self.__get_single_session(i2))
+            yield (self.get_single_session(i2))
 
     def get_will_request_sessions(self):
         sessions = self.__get_all_session()

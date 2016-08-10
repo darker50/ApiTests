@@ -164,17 +164,14 @@ class Request(object):
                    data1), "Response code: ", str(response.ok), '%s%s' % ("Response body: \n", str(response.text)))
 
         if not response.ok:
-            sessions.WriteSessions.WriteSessions(self.threading_id, "t", self.threading_id, session,
-                                                 "ErrorResponse").start()
+            sessions.WriteSessions.write_sessions(self.threading_id, "t", self.threading_id, session, "ErrorResponse")
         elif json.loads(response.text)['StatsCode'] != 200:
             if json.loads(response.text)['Message'].startswith("程序异常"):
-                sessions.WriteSessions.WriteSessions(self.threading_id, "t", self.threading_id, session,
-                                                     "ProgramCrash").start()
+                sessions.WriteSessions.write_sessions(self.threading_id, "t", self.threading_id, session, "ProgramCrash")
             else:
-                sessions.WriteSessions.WriteSessions(self.threading_id, "t", self.threading_id, session,
-                                                     "VerifyRequest").start()
+                sessions.WriteSessions.write_sessions(self.threading_id, "t", self.threading_id, session, "VerifyRequest")
         else:
-            sessions.WriteSessions.WriteSessions(self.threading_id, "t", self.threading_id, session, "").start()
+            sessions.WriteSessions.write_sessions(self.threading_id, "t", self.threading_id, session, "")
 
         self.threading_id += 1
         # utils.HandleJson.HandleJson.print_json(response.text)

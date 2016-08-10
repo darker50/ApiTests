@@ -19,6 +19,8 @@ API_URL = ''
 SPECIAL_SESSIONS = ''
 SESSIONS_PAIR = ''
 SESSIONS_PAIR_DICT = {}
+HOST = ''
+BEFORE_SESSIONS = []  # 遍历前的全部接口，即ReadSessions读取的接口
 
 
 def get_dd_type(dd_type):

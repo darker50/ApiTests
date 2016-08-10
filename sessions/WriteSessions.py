@@ -19,9 +19,16 @@ import threading
 
 import utils.GlobalList
 
+mutex = threading.Lock()
+
+
+def write_sessions(threading_id, threading_name, threading_queue, session, error_path):
+    w = WriteSessions(threading_id, threading_name, threading_queue, session, error_path)
+    w.start()
+    w.join()
+
 
 class WriteSessions(threading.Thread):
-
     def __init__(self, threading_id, threading_name, threading_queue, session, error_path):
         threading.Thread.__init__(self)
         self.threading_id = threading_id
@@ -32,19 +39,25 @@ class WriteSessions(threading.Thread):
         self.path = ""
 
     def run(self):
-        self.__write_session()
+        global mutex
+        if mutex.acquire():
+            self.__write_session()
+            mutex.release()
 
     def __write_session(self):
         """
         把请求写入文件，一个请求一个文件
         :return:
         """
-        dir1 = '%s%s' % (utils.GlobalList.SESSIONS_PATH, "\\Sessions\\")
+        dir0 = '%s%s' % (utils.GlobalList.SESSIONS_PATH, "\\Sessions")
+        if not os.path.exists(dir0):
+            os.mkdir(dir0)
+        dir1 = '%s%s%s%s' % (utils.GlobalList.SESSIONS_PATH, "\\Sessions\\", utils.GlobalList.HOST, "\\")
         if not os.path.exists(dir1):
             try:
                 os.mkdir(dir1)
             except FileExistsError:
-                print("")
+                print("FileExistsError")
         if len(self.error_path) == 0:
             self.path = '%s%s%s' % (dir1, self.session[0], ".txt")
         else:
@@ -58,3 +71,7 @@ class WriteSessions(threading.Thread):
             f.write("Session end")
             f.write("\n")
             f.write("\n")
+
+
+if __name__ == "__main__":
+    pass
