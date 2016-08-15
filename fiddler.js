@@ -202,8 +202,8 @@ class Handlers
 	}
 
 	//自定义参数设置
-	public static var filterUrl = "a-webapi.test.b.com";
-	public static var filePath = "D:\\Fiddler Sessions\\Api\\";
+	public static var filterUrl = "A.B.C.com";
+	public static var filePath = "D:\\Fiddler Sessions\\Api\\" + filterUrl + "\\";
 	public static var filePathForRequested = "D:\\Fiddler Sessions\\Requested.txt";
 	public static var filePathForErrorResponse = "D:\\Fiddler Sessions\\ErrorResponse.txt";
 	public static var filePathForVerifyRequset = "D:\\Fiddler Sessions\\VerifyRequset.txt";
@@ -346,7 +346,7 @@ class Handlers
 				file.writeLine("Response code: " + oSession.responseCode + "\r\n");
 				file.close();
 				oSession["ui-color"] = "blue"
-			} else if (responseBody.IndexOf("\"StatsCode\":200") != 1){
+			} else if (responseBody.IndexOf("\"Status\":1") != 1 && responseBody.IndexOf("\"Status\":200") != 1 && responseBody.IndexOf("\"Status\":-1") != 1){
 				oSession.utilDecodeResponse();//消除保存的请求可能存在乱码的情况
 				//保存服务器返回StatsCode 不为200的请求
 				file = fso.OpenTextFile(filePathForVerifyRequset,8 ,true, true);
@@ -433,7 +433,8 @@ class Handlers
 	static function Main() {
 		var today: Date = new Date();
 		FiddlerObject.StatusText = " CustomRules.js was loaded at: " + today;
-
+		var s = new ActiveXObject("WScript.Shell");
+		s.Run("python D:\\Git\\Automated_Test\\fiddler\\InitFiddler.py");
 		// Uncomment to add a "Server" column containing the response "Server" header, if present
 		// UI.lvSessions.AddBoundColumn("Server", 50, "@response.server");
 

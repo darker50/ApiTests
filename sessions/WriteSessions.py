@@ -25,7 +25,7 @@ mutex = threading.Lock()
 def write_sessions(threading_id, threading_name, threading_queue, session, error_path):
     w = WriteSessions(threading_id, threading_name, threading_queue, session, error_path)
     w.start()
-    w.join()
+    w.join()  # 主线程等待子线程完成后退出，否则可能出现数据还未写完，就退出程序了
 
 
 class WriteSessions(threading.Thread):

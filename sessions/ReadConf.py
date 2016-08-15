@@ -9,16 +9,12 @@
 """
 
 import os
+
 import utils.GlobalList
 
 
 class ReadConf(object):
-
     def __init__(self, conf_path):
-        """
-        初始化字典
-        :param conf_path:
-        """
         self.conf_path = conf_path
         self.conf = {'tester': '', 'project': '', 'versionName': '', 'versionCode': '', 'AppBuild': '', 'host': '',
                      'systemType': '2', 'DeviceId': 'ffffffff-b3f1-87ad-90ef-ebeb00000000', 'Model': 'MI+4LTE',
@@ -26,10 +22,7 @@ class ReadConf(object):
                      'SessionsPath': '', 'ApiURL': '', 'SpecialSessions': '', 'SessionsPair': ''}
 
     def get_conf(self):
-        """
-        配置文件存入字典
-        :return:
-        """
+        print('读取配置文件中...')
         if not os.path.exists(self.conf_path):
             print("请确保配置文件存在！")
             return
@@ -49,6 +42,7 @@ class ReadConf(object):
                 self.conf['AppBuild'] = self.conf['versionCode']
             if i.startswith('host'):
                 self.conf['host'] = i.split('= ')[-1].replace('\n', '')
+                utils.GlobalList.HOST = self.conf['host']
             if i.startswith('getTokenHost'):
                 self.conf['getTokenHost'] = i.split('= ')[-1].replace('\n', '')
             if i.startswith('loginHost'):
@@ -68,9 +62,20 @@ class ReadConf(object):
                 self.conf['SessionsPair'] = i.split('= ')[-1].replace('\n', '')
                 utils.GlobalList.SESSIONS_PAIR = self.conf['SessionsPair']
 
+        self.__init_data()
         return self.conf
 
+    def __init_data(self):
+        """
+        初始化接口对，提取出创建数据接口与删除数据接口
+        :return:
+        """
+        for i in eval(self.conf['SessionsPair']):
+            session_create_name = i.split(':')[0]
+            session_create_parameter = i.split(':')[1].split('|')[0]
+            session_delete_name = i.split('|')[-1].split(':')[0]
+            session_delete_parameter = i.split(':')[-1]
+            utils.GlobalList.CREATE_DICT[session_create_name] = session_create_parameter
+            utils.GlobalList.DELETE_DICT[session_delete_name] = session_delete_parameter
+            utils.GlobalList.MAPPING_DICT[session_delete_name] = session_create_name
 
-if __name__ == "__main__":
-    r = ReadConf('D:\\Fiddler Sessions\\ApiText.conf')
-    r.get_conf()
