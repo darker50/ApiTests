@@ -14,17 +14,17 @@
 6.重新覆盖target_path的文件
 """
 
-import re
 import os
+import re
 
 
 class RemoveSession(object):
-
     def __init__(self):
         self.source_path = "D:\\Fiddler Sessions\\RemoveSession.txt"
-        self.target_path = "D:\\Fiddler Sessions\\Api"
+        self.target_path = "D:\\Fiddler Sessions\\Api\\"
         self.t = ""
         self.url = ""
+        self.host = ""
         self.target_file_path = ""
 
     def __get_session(self):
@@ -36,7 +36,16 @@ class RemoveSession(object):
         # Digest t="2016-07-26 11:10:02"
         reg_t = re.compile(r'Digest t="(.+?)"')
         reg_url = re.compile(r'Request url(.+?)\n')
-        data = open(self.source_path, encoding='utf-16-le').read().replace("", "")
+        try:
+            data = open(self.source_path, encoding='utf-16-le').read().replace("", "")
+            data1 = open(self.source_path, encoding='utf-16-le').readlines()
+        except UnicodeEncodeError:
+            data = open(self.source_path, encoding='utf-8').read().replace("", "")
+            data1 = open(self.source_path, encoding='utf-8').readlines()
+        for i in data1:
+            if not i.startswith("\n"):
+                if i.startswith("Request url: "):
+                    self.host = i.replace("Request url: ", "").split("/", 1)[0]
         self.url = re.findall(reg_url, data)[0].split('/')[-1]
         if self.url.startswith("GetToken"):
             return
@@ -47,7 +56,7 @@ class RemoveSession(object):
         获取目标地址目录下的文件列表
         :return: 返回标地址目录下的文件列表
         """
-        for root, dirs, files in os.walk(self.target_path):
+        for root, dirs, files in os.walk("%s%s" % (self.target_path, self.host)):
             return (f for f in files)
 
     def __match_file(self):
@@ -67,7 +76,7 @@ class RemoveSession(object):
         single_session = []
         total_session = []
         if file_name:
-            self.target_file_path = '%s%s%s' % (self.target_path, "\\", file_name[0])
+            self.target_file_path = '%s%s%s%s' % (self.target_path, self.host, "\\", file_name[0])
             try:
                 l = open(self.target_file_path, encoding='utf-16-le').readlines()
             except UnicodeDecodeError:
@@ -105,6 +114,7 @@ class RemoveSession(object):
             for i in l:
                 for j in i:
                     f.write(j)
+
 
 if __name__ == "__main__":
     session = RemoveSession()
